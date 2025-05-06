@@ -2,7 +2,7 @@
 
 Usage:
 ```
-py bezier_patch.py --height=4 --width=4
+py bezier_patch.py --height=4 --width=4 --deviation=0.1
 ```
 
 
