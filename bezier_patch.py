@@ -16,12 +16,19 @@ def bernstein_basis_3(t):
     ], dim=-1)  # shape: (..., 4)
 
 # --- 4x4 control point grid with noise ---
-def make_control_grid(grid_height=4, grid_width=4, deviation=0.1):
+def make_control_grid(grid_height=4, grid_width=4, deviation=0.05):
     base_height = torch.linspace(0.25, 0.75, grid_height, device=device)  # (4,)
     base_width = torch.linspace(0.25, 0.75, grid_width, device=device)  # (4,)
     x, y = torch.meshgrid(base_width, base_height, indexing="ij")
     control_points = torch.stack([x, y], dim=-1)  # (4, 4, 2)
-    control_points += torch.randn_like(control_points) * deviation
+    
+    # Shape: (grid_height, grid_width, 2), last dim is (y, x)
+    noise = torch.randn_like(control_points)
+    noise[..., 0] *= deviation / ((grid_height + 1) / 3)
+    noise[..., 1] *= deviation / ((grid_width + 1) / 3)
+    control_points += noise
+
+
     return control_points  # (4, 4, 2)
 
 def hsv_to_rgb(h, s, v):
@@ -100,8 +107,8 @@ def rasterize_patch(patch_coords, patch_colors, H=128, W=128):
     img[:, y, x] = colors.T  # Set RGB per pixel
     return img
 
-def render_bezier_patch_image(H=256, W=256, height_patches=2, width_patches=2):
-    control_pts = make_control_grid(grid_height=height_patches*3+1, grid_width=width_patches*3+1, deviation=0.05)
+def render_bezier_patch_image(H=256, W=256, height_patches=2, width_patches=2, deviation=0.05):
+    control_pts = make_control_grid(grid_height=height_patches*3+1, grid_width=width_patches*3+1, deviation=deviation)
 
     image = torch.zeros(3, H, W, device=device)
 
@@ -126,6 +133,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Render Bézier patch image")
     parser.add_argument("--height", type=int, default=2, help="Number of Bézier patches vertically")
     parser.add_argument("--width", type=int, default=2, help="Number of Bézier patches horizontally")
+    parser.add_argument("--deviation", type=float, default=0.05, help="Control point deviation")
 
     args = parser.parse_args()
 
@@ -133,7 +141,8 @@ if __name__ == "__main__":
         H=args.height*128,
         W=args.width*128,
         height_patches=args.height,
-        width_patches=args.height
+        width_patches=args.width,
+        deviation=args.deviation
     )
 
     torchvision.utils.save_image(image, f"bezier_patch_{args.height}x{args.width}.png")
