@@ -137,5 +137,5 @@ if __name__ == "__main__":
     )
 
     torchvision.utils.save_image(image, f"bezier_patch_{args.height}x{args.width}.png")
-    print("Image saved to bezier_patch.png")
+    print(f"Image saved to bezier_patch_{args.height}x{args.width}.png")
 
