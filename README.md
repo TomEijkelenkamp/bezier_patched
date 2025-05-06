@@ -1,4 +1,11 @@
-# Bezier patches stiched together in colors
+# Bezier patches stitched together in colors
 
-![bezier_patch_2x2](bezier_patch_2x2.png)
-![bezier_patch_8x8](bezier_patch_8x8.png)
+### 2x2 patch
+<p align="center">
+  <img src="bezier_patch_2x2.png" alt="bezier_patch_2x2" />
+</p>
+
+### 8x8 patch
+<p align="center">
+  <img src="bezier_patch_8x8.png" alt="bezier_patch_8x8" />
+</p>
