@@ -10,7 +10,7 @@ py bezier_patch.py --height=4 --width=4
   <img src="bezier_patch_2x2.png" alt="bezier_patch_2x2" />
 </p>
 
-### 8x8 patch
+### 4x4 patch
 <p align="center">
   <img src="bezier_patch_4x4.png" alt="bezier_patch_4x4" />
 </p>
